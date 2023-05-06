@@ -70,7 +70,7 @@ void main(){
         exit(1);
     }
     TTF_Init();
-    SDL_Window* window = SDL_CreateWindow(TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, window_w, window_h, SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN);
+    SDL_Window* window = SDL_CreateWindow(TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, window_w, window_h, SDL_WINDOW_SHOWN);
     if(window == NULL){
         printf("Could not make window reason: %s\n", SDL_GetError());
         exit(1);
@@ -95,19 +95,24 @@ void main(){
         clickable(vec2i(window_w-30, 100), vec2i(30, 30), vec4i(255, 255, 255, 255), NULL),
         clickable(vec2i(window_w-30, 135), vec2i(30, 30), vec4i(255, 255, 255, 255), NULL),
         clickable(vec2i(window_w-30, 170), vec2i(30, 30), vec4i(255, 255, 255, 255), NULL),
+        clickable(vec2i(window_w-30, 205), vec2i(30, 30), vec4i(255, 255, 255, 255), NULL),
     };
-    Text collectText =            text(font, "Collect = ",            vec2i(0, 0), vec4i(255, 255, 255, 255));
+    Text texts[] = {
+        text(font, "Collect = ",            vec2i(0, 0), vec4i(255, 255, 255, 255)),
+        text(font, "Collect Per Second = ", vec2i(0, get_surface_size(font, "Collect = ").y), vec4i(255, 255, 255, 255)),
+        text(font, "Click Power = ",           vec2i(0, get_surface_size(font, "Collect = ").y*2), vec4i(255, 255, 255, 255)),
+        text(font, "Price - Collect Per Second", vec2i(window_w-get_surface_size(font, "Price - Collect Per Second").x-31, 0), vec4i(255, 255, 255, 255)),
+        text(font, "  10       Click Power + 1", vec2i(window_w-get_surface_size(font, "Price - Collect Per Second").x-31, 30), vec4i(255, 255, 255, 255)),
+        text(font, "  100         5", vec2i(window_w-get_surface_size(font, "Price - Collect Per Second").x-31, 60+5), vec4i(255, 255, 255, 255)),
+        text(font, "  500        20", vec2i(window_w-get_surface_size(font, "Price - Collect Per Second").x-31, 90+10), vec4i(255, 255, 255, 255)),
+        text(font, " 1000        50", vec2i(window_w-get_surface_size(font, "Price - Collect Per Second").x-31, 120+15), vec4i(255, 255, 255, 255)),
+        text(font, " 5000        200", vec2i(window_w-get_surface_size(font, "Price - Collect Per Second").x-31, 150+20), vec4i(255, 255, 255, 255)),
+        text(font, " 10000     Click Power * 2", vec2i(window_w-get_surface_size(font, "Price - Collect Per Second").x-31, 180+25), vec4i(255, 255, 255, 255)),
+        text(font, " 20000      2000", vec2i(window_w-get_surface_size(font, "Price - Collect Per Second").x-31, 210+30), vec4i(255, 255, 255, 255)),
+    };
     Text collectInt =             text(font, ccolect,                 vec2i(get_surface_size(font, "Collect = ").x, 0), vec4i(255, 255, 255, 255));
-    Text collect_per_secondText = text(font, "Collect Per Second = ", vec2i(0, get_surface_size(font, "Collect = ").y), vec4i(255, 255, 255, 255));
     Text collect_per_secondInt =  text(font, ccollect_per_second,     vec2i(get_surface_size(font, "Collect Per Second = ").x, get_surface_size(font, "Collect = ").y), vec4i(255, 255, 255, 255));
-    Text clickPowerText =         text(font, "Click Power = ",           vec2i(0, get_surface_size(font, "Collect = ").y*2), vec4i(255, 255, 255, 255));
     Text clickPowerInt =          text(font, cclickpower,             vec2i(get_surface_size(font, "Click Power = ").x, get_surface_size(font, "Collect = ").y*2), vec4i(255, 255, 255, 255));
-    Text priceText = text(font, "Price - Collect Per Second", vec2i(window_w-get_surface_size(font, "Price - Collect Per Second").x-31, 0), vec4i(255, 255, 255, 255));
-    Text price1text = text(font, "  10       Click Power + 1", vec2i(window_w-get_surface_size(font, "Price - Collect Per Second").x-31, 30), vec4i(255, 255, 255, 255));
-    Text price2text = text(font, "  100         5", vec2i(window_w-get_surface_size(font, "Price - Collect Per Second").x-31, 60+5), vec4i(255, 255, 255, 255));
-    Text price3text = text(font, "  500        20", vec2i(window_w-get_surface_size(font, "Price - Collect Per Second").x-31, 90+10), vec4i(255, 255, 255, 255));
-    Text price4text = text(font, " 1000        50", vec2i(window_w-get_surface_size(font, "Price - Collect Per Second").x-31, 120+15), vec4i(255, 255, 255, 255));
-    Text price5text = text(font, " 5000        200", vec2i(window_w-get_surface_size(font, "Price - Collect Per Second").x-31, 150+20), vec4i(255, 255, 255, 255));
     Mouse m = mouse(vec2i(0, 0));
     
     // -----------------------------------------------------------------------------------------
@@ -206,18 +211,10 @@ void main(){
         SDL_RenderClear(renderer);
         DrawClickable(renderer, click);
         DrawClickables(renderer, clickables);
-        DrawText(renderer, collectText);
+        DrawTexts(renderer, texts, sizeof(texts)/sizeof(texts[0]));
         DrawText(renderer, collectInt);
-        DrawText(renderer, collect_per_secondText);
         DrawText(renderer, collect_per_secondInt);
-        DrawText(renderer, clickPowerText);
         DrawText(renderer, clickPowerInt);
-        DrawText(renderer, priceText);
-        DrawText(renderer, price1text);
-        DrawText(renderer, price2text);
-        DrawText(renderer, price3text);
-        DrawText(renderer, price4text);
-        DrawText(renderer, price5text);
         SDL_RenderPresent(renderer);
         frames_passed += 1;
         int delta = SDL_GetTicks()-startLoop;

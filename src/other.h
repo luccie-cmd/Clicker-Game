@@ -7,6 +7,6 @@
 
 /* checks if the 2 arguments overlap */
 bool aabb_collision(AABB first, AABB second);
-SDL_Texture* get_texture(SDL_Renderer* renderer, const char* file_path);
+SDL_Texture* get_texture(SDL_Renderer *renderer, const char* file_path);
 
 #endif
