@@ -56,6 +56,33 @@ void PlaySound(const char* path){
     Mix_PlayChannel(-1, sound, 0);
 }
 
+void Start(SDL_Renderer* renderer, bool start_screen, SDL_Event event){
+    while(start_screen){
+        while(SDL_PollEvent(&event)){
+            switch (event.type){
+                case SDL_QUIT:
+                    start_screen = false;
+                break;
+                case SDL_KEYDOWN: {
+                    switch(event.key.keysym.sym){
+                        case SDLK_ESCAPE: {
+                            start_screen = false;
+                        }
+                    }
+                } break;
+                case SDL_MOUSEBUTTONDOWN: {
+                    switch(event.button.button){
+                        case SDL_BUTTON_LEFT: {
+                            start_screen = false;
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 void End_Screen(bool end_screen, TTF_Font* font, Vec2i window_size, SDL_Event event, Mouse m, SDL_Renderer* renderer){
     int window_w = window_size.x;
     int window_h = window_size.y;
