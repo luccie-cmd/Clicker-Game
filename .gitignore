@@ -1,6 +1,8 @@
-bg.mp3
+.vscode/
 SDL2/
+KHR/
+glad/
 lib/
 idea.png
 *.exe
-.vscode/
+bg.mp3

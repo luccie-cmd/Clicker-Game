@@ -24,27 +24,21 @@ void DrawClickable(SDL_Renderer* renderer, Clickable clickable){
         DrawTexture(renderer, clickable.texture, clickable.pos, clickable.size);
     }
 }
-void DrawClickables(SDL_Renderer* renderer, Clickable *clickables){
-    int length = sizeof(clickables)/2;
+void DrawClickables(SDL_Renderer* renderer, Clickable *clickables, size_t length){
+    length -= 1;
     for(int i = 0; i <= length; ++i){
         DrawClickable(renderer, clickables[i]);
     }
 }
 
 void DrawText(SDL_Renderer* renderer, Text text){
-    SDL_Surface *surface = TTF_RenderText_Solid(text.font, text.text, color_from_Vec4i(text.color));
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_Surface* surface = TTF_RenderText_Solid(text.font, text.text, color_from_Vec4i(text.color));
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
     if(surface == NULL || texture == NULL){
         printf("Could not make texture or surface: %s\n", SDL_GetError());
     }
     SDL_Rect dstrect = {.x = text.pos.x, .y = text.pos.y, .w = surface->w, .h = surface->h};
     SDL_RenderCopy(renderer, texture, NULL, &dstrect);
-}
-void DrawTexts(SDL_Renderer* renderer, Text *texts, int size){
-    int length = sizeof(texts[0])/sizeof(texts);
-    for(int i = 0; i <= size; ++i){
-        DrawText(renderer, texts[i]);
-    }
 }
 void DrawTexture(SDL_Renderer* renderer, SDL_Texture* texture, Vec2i pos, Vec2i size){
     int texture_w, texture_h;
@@ -56,7 +50,7 @@ void DrawTexture(SDL_Renderer* renderer, SDL_Texture* texture, Vec2i pos, Vec2i 
     SDL_Rect dst = {.x = pos.x, .y = pos.y, .w = clamp(size.x, texture_w, size.x), .h = clamp(size.y, texture_h, size.y)};
     SDL_RenderCopy(renderer, texture, &src, &dst);
 }
-Vec2i get_surface_size(TTF_Font* font, char* text){
+Vec2i get_surface_size(TTF_Font *font, char* text){
     SDL_Surface* surface = TTF_RenderText_Solid(font, text, color_from_Vec4i(vec4i(255, 255, 255, 255)));
     Vec2i buffer = {.x = surface->w, .y = surface->h};
     return buffer;
